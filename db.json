@@ -1,20 +1,28 @@
 {
   "todos": [
     {
-      "name": "NewItem",
+      "name": "New item",
       "id": 1
     },
     {
-      "name": "Jana",
+      "name": "Another item",
       "id": 2
     },
     {
-      "name": "This is magic",
+      "name": "test",
       "id": 3
     },
     {
-      "name": "boobs",
+      "name": "one more",
       "id": 4
+    },
+    {
+      "name": "plus one",
+      "id": 5
+    },
+    {
+      "name": "sex",
+      "id": 6
     }
   ]
 }

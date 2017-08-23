@@ -6,17 +6,16 @@
 
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet } from 'react-native';
-import { Todo } from './src/app/todo';
-import { Fancy } from './src/app/fancy';
-import { Reddit } from './src/app/Reddit';
+import { Todo } from './src/app/Todo';
+import { Provider } from 'react-redux';
+import { store } from './src/app/store';
+import { Main as Root } from './src/app/Main';
 
-export default class Main extends Component {
-  render() {
-    return (
-        <Todo />
-    );
-  }
-}
+const Main = () => (
+    <Provider store={store}>
+        <Root />
+    </Provider>
+);
 
 const styles = StyleSheet.create({
   container: {

@@ -6,23 +6,24 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
+import { TodoForm } from './TodoForm';
+import {connect} from 'react-redux';
+import { CREATE_TODO, SET_TODOS } from './reducers';
 
-export class Todo extends Component {
+
+export class _Todo extends Component {
     constructor () {
         super();
-        this.state = {
-            todos: [],
-            newTodo: ''
-        }
+        this.state = {newTodo: ''}
     }
 
-    componentWillMount() {
+    componentDidMount() {
         fetch('http://192.168.178.28:3000/todos', {
             headers: {
                 'Accept': 'application/json'
             }
         }).then(res => res.json())
-            .then(todos => this.setState({todos}));
+            .then(todos => {this.props.setTodos(todos);});
     }
 
     handleChange(text){
@@ -32,6 +33,8 @@ export class Todo extends Component {
     }
 
     handlePress(){
+        // this.props.createTodo(this.state.newTodo);
+
         fetch('http://192.168.178.28:3000/todos', {
             method: 'POST',
             body: JSON.stringify({
@@ -42,8 +45,11 @@ export class Todo extends Component {
             }
         }).then(res => res.json())
             .then(todo => {
-                const todos = [todo, ...this.state.todos];
-                this.setState({todos, newTodo: ''});
+                // const todos = [todo, ...this.state.todos];
+                // this.setState({todos, newTodo: ''});
+
+                this.props.createTodo(todo);
+                this.setState({newTodo: ''});
             })
 
         ;
@@ -55,22 +61,12 @@ export class Todo extends Component {
     render () {
         return (
             <View style={styles.container}>
-                <View style={styles.form}>
-                    <TextInput
-                        style={styles.input}
-                        value={this.state.newTodo}
-                        onChangeText={this.handleChange.bind(this)}>
-                    </TextInput>
-                    <TouchableOpacity style={styles.button}>
-                        <Text
-                            style={styles.buttonText}
-                            onPress={this.handlePress.bind(this)}
-                        >
-                            Make
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.todos}>{this.state.todos.map((todo, i) => (
+                <TodoForm
+                    handlePress={this.handlePress.bind(this)}
+                    handleChange={this.handleChange.bind(this)}
+                    value={this.state.newTodo}
+                />
+                <View style={styles.todos}>{this.props.todos.map((todo, i) => (
                     <View key={i} style={styles.todo}>
                         <Text style={styles.todoText}>{todo.name}</Text>
                     </View>
@@ -79,6 +75,21 @@ export class Todo extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => ({
+    todos: state.todos
+});
+
+const mapActionsToProps= (dispatch) => ({
+    createTodo(todo) {
+        dispatch({type: CREATE_TODO, payload: todo})
+    },
+    setTodos(todos) {
+        dispatch({type: SET_TODOS, payload: todos})
+    }
+});
+
+export const Todo = connect(mapStateToProps, mapActionsToProps)(_Todo);
 
 const styles = StyleSheet.create({
     container: {
